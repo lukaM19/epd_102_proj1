@@ -1,3 +1,4 @@
+import math
 import random
 
 
@@ -39,16 +40,28 @@ def read_coordinates_from_terminal():
             print("Please enter whole numbers.")
 
 
-def solution(coords):
-    pass
+def dist(a, b):
+    """Euclidean distance between points a and b, each given as (x, y)."""
+    return math.hypot(a[0] - b[0], a[1] - b[1])
 
 
-def visualization(coords, route):
-    pass
+def build_distances(coords):
+    """Precompute distances between every pair of points.
 
+    Keys are index pairs (i, j), so dists[(i, j)] is the distance from
+    point i to point j. Both (i, j) and (j, i) are stored.
+    """
+    dists = {}
+    for i in range(len(coords)):
+        for j in range(i, len(coords)):
+            d = dist(coords[i], coords[j])
+            dists[(i, j)] = d
+            dists[(j, i)] = d
+    return dists
 
 if __name__ == "__main__":
     points = read_coordinates_from_terminal()
     print(points)
-    route = solution(points)
+    dists = build_distances(points)
+    route = solution(points, dists)
     visualization(points, route)
