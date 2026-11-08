@@ -59,6 +59,12 @@ def build_distances(coords):
             dists[(j, i)] = d
     return dists
 
+def solution(coords):
+    pass
+
+def visualization(coords, route):
+    pass
+
 if __name__ == "__main__":
     points = read_coordinates_from_terminal()
     print(points)
