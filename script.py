@@ -1,5 +1,7 @@
 import math
 import random
+import time
+import matplotlib.pyplot as plt
 
 
 def get_coordinates(coords=None, n=10, width=100, height=100, seed=42):
@@ -114,17 +116,55 @@ def solution(coords, dists):
     route.reverse()
     return [0] + route + [0], best_length
 
-def visualization(coords, route):
-    pass
+def visualization(coordinates, route, length):
+    # empty lists to store the x and y values of the coordinates
+    x_values = []
+    y_values = []
+ 
+    #loop through the coordinates and separate the x and y values
+    for x,y in coordinates:
+        x_values.append(x)
+        y_values.append(y)  
+ 
+    #create a graph with the width and height of 10
+    plt.figure(figsize=(10, 10))
+ 
+    #plot the customers in blue and the depot in red
+    plt.scatter(x_values[1:], y_values[1:], color='blue', label='Customers')
+    plt.scatter(x_values[0], y_values[0], color='red', label='Depot')
+
+    # draw the route as arrows between consecutive stops
+    if route:
+        for a, b in zip(route, route[1:]):
+            plt.annotate("", xy=coordinates[b], xytext=coordinates[a], arrowprops=dict(arrowstyle="->", color="green"))
+
+    # tag each city with it's "name" (index)
+    for i, (x, y) in enumerate(coordinates):
+            plt.annotate(str(i), (x, y), textcoords="offset points", xytext=(6, 6))
+
+    title = f"Held-Karp (optimal): {length:.2f}"
+    plt.title(title or ('Route' if route else 'Locations of Depot and Customers'))
+    plt.xlabel('X Coordinate')
+    plt.ylabel('Y Coordinate')
+    plt.grid(True)
+    # add padding so the labels near the edges stay inside the plot
+    plt.margins(0.1)
+    plt.axis("equal")
+    plt.legend()
+    # show the graph
+    plt.show()
 
 if __name__ == "__main__":
     points = read_coordinates_from_terminal()
     print(points)
     dists = build_distances(points)
+    start_time = time.time()
     route, length = solution(points, dists)
+    end_time = time.time()
+    print(f"Computation time: {end_time - start_time:.4f} seconds")
     print("Route (point indices):", " -> ".join(map(str, route)))
     print("Route (coordinates):")
     for i in route:
         print(f"  {i}: ({points[i][0]:.2f}, {points[i][1]:.2f})")
     print(f"Total distance: {length:.2f}")
-    # visualization(points, route)
+    visualization(points, route, length)
